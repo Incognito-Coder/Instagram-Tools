@@ -1,7 +1,11 @@
 ## Instagram Basic Tools
 
 Little php class for instagram.\
-**Note** : _Don't forgot to set your own Coockie in Script._
+**Note** : _Don't forgot to set your own Coockie in Script._\
+
+```php
+$_COOKIE = '';
+```
 
 ## Main Features:
 
