@@ -1,0 +1,12 @@
+@font-face {
+    font-family: Instagram;
+    src: url("../fonts/instagram.otf") format("opentype");
+}
+.gradient-custom {
+    /* fallback for old browsers */
+    background: #e27228;
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right, rgba(226, 114, 40, 1), rgba(231, 35, 129, 1));
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, rgba(226, 114, 40, 1), rgba(231, 35, 129, 1))
+}
