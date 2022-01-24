@@ -1,6 +1,7 @@
 <?php
 header('Content-type: application/json');
 $_COOKIE = '';
+error_reporting(0);
 class Instagram
 {
     function igInfo($user)
@@ -64,30 +65,30 @@ class Instagram
         $response = json_decode($exec);
         curl_close($request);
         if ($exec != '{}') {
-            $data = $response->graphql->shortcode_media;
-            if ($data->__typename == 'GraphVideo') {
-                if (empty($data->edge_media_to_caption->edges[0]->node->text))
-                    return json_encode(['status' => true, 'type' => 'video', 'caption' => null, 'file' => $data->video_url], 128);
+            $data = $response->items[0];
+            if ($data->media_type == 2) {
+                if (empty($data->caption->text))
+                    return json_encode(['status' => true, 'type' => 'video', 'caption' => null, 'file' => $data->video_versions[0]->url], 128);
                 else
-                    return json_encode(['status' => true, 'type' => 'video', 'caption' => $data->edge_media_to_caption->edges[0]->node->text, 'file' => $data->video_url], 128);
-            } elseif ($data->__typename == 'GraphImage') {
-                if (empty($data->edge_media_to_caption->edges[0]->node->text))
-                    return json_encode(['status' => true, 'type' => 'image', 'caption' => null, 'file' => $data->display_url], 128);
+                    return json_encode(['status' => true, 'type' => 'video', 'caption' => $data->caption->text, 'file' => $data->video_versions[0]->url], 128);
+            } elseif ($data->media_type == 1) {
+                if (empty($data->caption->text))
+                    return json_encode(['status' => true, 'type' => 'image', 'caption' => null, 'file' => $data->image_versions2->candidates[0]->url], 128);
                 else
-                    return json_encode(['status' => true, 'type' => 'image', 'caption' => $data->edge_media_to_caption->edges[0]->node->text, 'file' => $data->display_url], 128);
-            } elseif ($data->__typename == 'GraphSidecar') {
+                    return json_encode(['status' => true, 'type' => 'image', 'caption' => $data->caption->text, 'file' => $data->image_versions2->candidates[0]->url], 128);
+            } elseif ($data->media_type == 8) {
                 $childrens = [];
-                foreach ($data->edge_sidecar_to_children->edges as $child) {
-                    if ($child->node->__typename == 'GraphVideo') {
-                        array_push($childrens, ['type' => $child->node->__typename, 'file' => $child->node->video_url]);
+                foreach ($data->carousel_media as $child) {
+                    if ($child->media_type == 2) {
+                        array_push($childrens, ['type' => 'video', 'file' => $child->image_versions2->candidates[0]->url]);
                     } else {
-                        array_push($childrens, ['type' => $child->node->__typename, 'file' => $child->node->display_url]);
+                        array_push($childrens, ['type' => 'image', 'file' => $child->image_versions2->candidates[0]->url]);
                     }
                 }
-                if (empty($data->edge_media_to_caption->edges[0]->node->text))
+                if (empty($data->caption->text))
                     return json_encode(['status' => true, 'type' => 'side', 'caption' => null, 'data' => $childrens], 128);
                 else
-                    return json_encode(['status' => true, 'type' => 'side', 'caption' => $data->edge_media_to_caption->edges[0]->node->text, 'data' => $childrens], 128);
+                    return json_encode(['status' => true, 'type' => 'side', 'caption' => $data->caption->text, 'data' => $childrens], 128);
             }
         } else {
             return json_encode(['status' => false], 128);
