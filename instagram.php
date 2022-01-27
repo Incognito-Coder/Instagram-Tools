@@ -1,7 +1,7 @@
 <?php
 header('Content-type: application/json');
 $_COOKIE = '';
-//error_reporting(0);
+error_reporting(0);
 class Instagram
 {
     function igInfo($user)
@@ -80,7 +80,7 @@ class Instagram
                 $childrens = [];
                 foreach ($data->carousel_media as $child) {
                     if ($child->media_type == 2) {
-                        array_push($childrens, ['type' => 'video', 'file' => $child->image_versions2->candidates[0]->url]);
+                        array_push($childrens, ['type' => 'video', 'file' => $child->video_versions[0]->url]);
                     } else {
                         array_push($childrens, ['type' => 'image', 'file' => $child->image_versions2->candidates[0]->url]);
                     }
