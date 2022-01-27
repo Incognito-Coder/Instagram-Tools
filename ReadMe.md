@@ -12,6 +12,7 @@ $_COOKIE = '';
 * Return Account Info (Profile)
 * Download Posts
 * Also Support Sliding Posts
+* Download Stories
 
 ## Credits
 
