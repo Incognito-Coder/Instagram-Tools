@@ -5,9 +5,21 @@ function Run() {
             var JData = JSON.parse(this.responseText);
             document.getElementById("caption").hidden = false;
             document.getElementById("files").hidden = false;
+            document.getElementById("thumb").hidden = false;
             var prettyCaption = JData.caption;
             document.getElementById("caption").innerHTML = prettyCaption.replace('\n', '<br>');
+            var data = new FormData();
+            data.append("file", JData.file);
+            var xhr = new XMLHttpRequest();
+            xhr.addEventListener("readystatechange", function () {
+                if (this.readyState === 4) {
+                    var json = JSON.parse(this.responseText);
+                    document.getElementById("thumb").src = json.path;
 
+                }
+            });
+            xhr.open("POST", "https://mr-alireza.ir/API/proxy.php");
+            xhr.send(data);
             if (isUnicode(document.getElementById('caption').textContent)) {
                 document.getElementById('caption').style.direction = 'rtl';
             }
