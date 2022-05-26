@@ -97,7 +97,8 @@ class Instagram
     }
     function igStory($url)
     {
-        $urlnew = str_replace('?utm_medium=share_sheet', '/', $url);
+        preg_match('/.*([?].*)/', $url, $match);
+        $urlnew =  str_replace($match[1], '/', $url);
         $curl_id = curl_init();
         curl_setopt_array($curl_id, array(
             CURLOPT_URL => sprintf('%s?__a=1', $urlnew),
