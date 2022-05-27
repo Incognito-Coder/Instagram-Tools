@@ -17,6 +17,6 @@ $_COOKIE = '';
 
 ## Credits
 
-Developer : Incognito Coder\
+Developer : Incognito Coder & Arash Ariaye\
 if you enjoy my content, consider to buy me a coffee here:
 1. Donate [ZarinPal](https://zarinp.al/@incognito)
