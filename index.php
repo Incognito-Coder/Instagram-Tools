@@ -5,18 +5,19 @@ header('Expires: 0');
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="apple-touch-icon" href="icon/instagram_128.png">
-  <meta name="theme-color" content="black" />
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="PWA">
-  <meta name="msapplication-TileImage" content="icon/instagram_128.png">
-  <meta name="msapplication-TileColor" content="#000">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" href="icon/instagram_128.png">
+    <meta name="theme-color" content="black" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="InstaTaker">
+    <meta name="msapplication-TileImage" content="icon/instagram_128.png">
+    <meta name="msapplication-TileColor" content="#000">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InsDown - Instagram Downloader</title>
     <link rel="shortcut icon" type="image/x-icon" href="https://www.instagram.com/static/images/ico/favicon.ico/36b3ee2d91ed.ico">
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet" type="text/css" />
@@ -40,44 +41,43 @@ header('Expires: 0');
         <div id="files" class="shadow bg-light text-dark p-2 rounded" hidden>Files:
         </div>
     </div>
-<footer class="text-center text-white">
-    <!-- Copyright -->
-    <div class="text-center m-3 p-2" style="background-color: rgba(0, 0, 0, 0.2);">
-        © 2021 Copyright : <a class="text-white" href="https://mr-alireza.ir/">Alireza Ahmand</a> | Designed with <i class="fas fa-heart" style="color:red"></i> by
-        Me
-    </div>
-    <!-- Copyright -->
-</footer>
-<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.min.js"></script>
-<script src="sw.js"></script>
-<script src="js/script.js"></script>
+    <footer class="text-center text-white">
+        <!-- Copyright -->
+        <div class="text-center m-3 p-2" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2021 Copyright : <a class="text-white" href="https://mr-alireza.ir/">Alireza Ahmand</a> | Designed with <i class="fas fa-heart" style="color:red"></i> by
+            Me
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.min.js"></script>
+    <script src="sw.js"></script>
+    <script src="js/script.js"></script>
 
-<script>
-$("#button-search").click(function(){
-    $("#url-field").val('');
-    
-    $("#thumb").hide('3500');
-    $("#caption").hide('3500');
-    $("#files").hide('3500');
-    
-    
-    $("#caption").html('');
-    $("#files").html('');
-    
-    $("#thumb").show('4500');
-    $("#caption").show('4500');
-    $("#files").show('4500');
-    
-  });
-        
+    <script>
+        $("#button-search").click(function() {
+            $("#url-field").val('');
 
-    if (!navigator.serviceWorker.controller) {
-        navigator.serviceWorker.register("sw.js").then(function (reg) {
-            console.log("Service worker has been registered for scope: " + reg.scope);
+            $("#thumb").hide('3500');
+            $("#caption").hide('3500');
+            $("#files").hide('3500');
+
+
+            $("#caption").html('');
+            $("#files").html('');
+
+            $("#thumb").show('4500');
+            $("#caption").show('4500');
+            $("#files").show('4500');
+
         });
-    }
-    
-</script>
+
+
+        if (!navigator.serviceWorker.controller) {
+            navigator.serviceWorker.register("sw.js").then(function(reg) {
+                console.log("Service worker has been registered for scope: " + reg.scope);
+            });
+        }
+    </script>
 </body>
 
 
