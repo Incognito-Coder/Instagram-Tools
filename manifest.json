@@ -1,0 +1,41 @@
+{
+    "name": " insta down",
+    "short_name": "IGT",
+    "start_url": "/",
+    "background_color": "#6777ef",
+    "description": "دانلود از اینستا",
+    "display": "fullscreen",
+    "theme_color": "#6777ef",
+    "icons": [{
+            "src": "icon/instagram_16.png",
+            "sizes": "16x16",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "icon/instagram_32.png",
+            "sizes": "32x32",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "icon/instagram_64.png",
+            "sizes": "64x64",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "icon/instagram_128.png",
+            "sizes": "128x128",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "icon/instagram_256.png",
+            "sizes": "256x256",
+            "type": "image/png",
+            "purpose": "any"
+        }
+
+    ]
+}
