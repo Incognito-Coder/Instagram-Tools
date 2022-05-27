@@ -10,9 +10,10 @@ $_COOKIE = '';
 ## Main Features:
 
 * Return Account Info (Profile)
-* Download Posts
-* Also Support Sliding Posts
-* Download Stories
+
+## V2.2
+
+* Now is be Pwa
 
 ## Credits
 
