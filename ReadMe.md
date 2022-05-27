@@ -7,15 +7,19 @@ Little php class for instagram.\
 $_COOKIE = '';
 ```
 
-## Main Features:
+## Ability:
 
-* Return Account Info (Profile)
-* Download Posts
-* Also Support Sliding Posts
 * Download Stories
+* Download Posts
+* Download IG TV
+* Download Highlights
+
+## V2.2:
+* Now It's PWA
+* DeBuged Indax Page With jquery 
 
 ## Credits
 
-Developer : Incognito Coder\
+Developer : Incognito Coder\ Arash-Ariaye
 if you enjoy my content, consider to buy me a coffee here:
 1. Donate [ZarinPal](https://zarinp.al/@incognito)
