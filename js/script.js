@@ -52,6 +52,7 @@ function Run() {
     };
     xmlhttp.open("GET", "https://mr-alireza.ir/API/instagram.php?link=" + document.getElementById("url-field").value, true);
     xmlhttp.send();
+    
 }
 
 function isUnicode(str) {
