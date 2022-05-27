@@ -1,12 +1,13 @@
 {
-    "name": " insta down",
+    "name": "insta down",
     "short_name": "IGT",
     "start_url": "/",
     "background_color": "#6777ef",
     "description": "دانلود از اینستا",
     "display": "fullscreen",
     "theme_color": "#6777ef",
-    "icons": [{
+    "icons": [
+        {
             "src": "icon/instagram_16.png",
             "sizes": "16x16",
             "type": "image/png",
@@ -36,6 +37,5 @@
             "type": "image/png",
             "purpose": "any"
         }
-
     ]
 }
