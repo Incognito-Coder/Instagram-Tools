@@ -36,7 +36,7 @@ class InstagramAPI
                 'sec-fetch-site' => 'same-origin',
                 'sec-fetch-user' => '?1',
                 'upgrade-insecure-requests' => '1',
-                'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36',
+                'user-agent' => Uri::UA_IG_ANDROID,
                 'viewport-width' => '1920'
             ],
             'cookies' => $this->cookie
@@ -61,7 +61,7 @@ class InstagramAPI
                 'sec-fetch-site' => 'same-origin',
                 'sec-fetch-user' => '?1',
                 'upgrade-insecure-requests' => '1',
-                'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36',
+                'user-agent' => Uri::UA_IG_ANDROID,
                 'viewport-width' => '1920'
             ],
             'cookies' => $this->cookie
@@ -74,7 +74,7 @@ class InstagramAPI
         $options = [
             'headers' => [
                 'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                'User-Agent' => 'Mozilla/5.0 (Linux; Android 8.1.0; Pixel C Build/OPM8.190605.005; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/89.0.4389.90 Safari/537.36 Instagram 179.0.0.31.132 Android (27/8.1.0; 320dpi; 1800x2448; Google/google; Pixel C; dragon; drago'
+                'User-Agent' => Uri::UA_IG_ANDROID
             ],
             'cookies' => $this->cookie
         ];
@@ -86,7 +86,7 @@ class InstagramAPI
             'headers' => [
                 'accept' => '*/*',
                 'accept-language' => 'en-US,en;q=0.9,fa-IR;q=0.8,fa;q=0.7',
-                'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36',
+                'user-agent' => Uri::UA_IG_ANDROID,
                 'x-ig-app-id' => '936619743392459'
             ],
             'cookies' => $this->cookie
@@ -99,7 +99,7 @@ class InstagramAPI
             'headers' => [
                 'accept' => '*/*',
                 'accept-language' => 'en-US,en;q=0.9,fa-IR;q=0.8,fa;q=0.7',
-                'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36',
+                'user-agent' => Uri::UA_IG_ANDROID,
                 'x-ig-app-id' => '936619743392459'
             ],
             'cookies' => $this->cookie
@@ -117,7 +117,7 @@ class InstagramAPI
                     'headers' => [
                         'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
                         'accept-language' => 'en-US,en;q=0.9,fa-IR;q=0.8,fa;q=0.7',
-                        'user-agent' => 'Mozilla/5.0 (Linux; Android 8.1.0; Pixel C Build/OPM8.190605.005; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/89.0.4389.90 Safari/537.36 Instagram 179.0.0.31.132 Android (27/8.1.0; 320dpi; 1800x2448; Google/google; Pixel C; dragon; drago',
+                        'user-agent' => Uri::UA_IG_ANDROID,
                         'Cache-Control' => 'max-age=0'
                     ],
                     'cookies' => $this->cookie
