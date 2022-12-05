@@ -25,12 +25,12 @@ class Login
                 'user-agent' => Uri::UA_IG_ANDROID,
             ],
         ]);
-        preg_match('/<script type="text\/javascript">window\._sharedData\s?=(.+);<\/script>/', $Request->getBody(), $matches);
+        preg_match('/\\\"csrf_token\\\":\\\"(.*?)\\\"/', $Request->getBody(), $matches);
         if (!isset($matches[1])) {
             throw new Exception('Unable to extract JSON data');
         }
 
-        $data = json_decode($matches[1]);
+        $data = $matches[1];
         $cookieJar = new FileCookieJar('cookies.txt', true);
         try {
             $query = $this->client->request('POST', Uri::AUTH_URL, [
@@ -39,9 +39,9 @@ class Login
                     'enc_password' => '#PWD_INSTAGRAM_BROWSER:0:' . time() . ':' . $this->password,
                 ],
                 'headers'     => [
-                    'cookie'      => 'ig_cb=1; csrftoken=' . $data->config->csrf_token,
+                    'cookie'      => 'ig_cb=1; csrftoken=' . $data,
                     'referer'     => Uri::BASE_URL,
-                    'x-csrftoken' => $data->config->csrf_token,
+                    'x-csrftoken' => $data,
                     'user-agent'  => Uri::UA_IG_ANDROID,
                 ],
                 'cookies'     => $cookieJar,
