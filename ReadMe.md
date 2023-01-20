@@ -18,6 +18,11 @@ use InstagramPHP\Login as InstagramPHPLogin;
 $session = new InstagramPHPLogin(new Client(), 'user', 'pass');
 $session->SessionLogin();
 ```
+## Local Deploy
+```bash
+cd Instagram-Tools && php -S localhost:8000
+```
+then open http://localhost:8000/ in browser,now you can use PWA in your local webserver.
 ## Main Features :
 * Return Account Info (Profile)
 * Download Media
