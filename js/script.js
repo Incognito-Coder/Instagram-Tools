@@ -18,7 +18,7 @@ function Run() {
 
                 }
             });
-            xhr.open("POST", "https://mr-alireza.ir/API/proxy.php");
+            xhr.open("POST", "proxy.php");
             xhr.send(data);
             if (isUnicode(document.getElementById('caption').textContent)) {
                 document.getElementById('caption').style.direction = 'rtl';
@@ -50,9 +50,9 @@ function Run() {
             }
         }
     };
-    xmlhttp.open("GET", "https://mr-alireza.ir/API/instagram.php?link=" + document.getElementById("url-field").value, true);
+    xmlhttp.open("GET", "instagram.php?link=" + document.getElementById("url-field").value, true);
     xmlhttp.send();
-    
+
 }
 
 function isUnicode(str) {
