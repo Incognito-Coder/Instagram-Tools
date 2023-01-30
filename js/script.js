@@ -15,7 +15,7 @@ function Run() {
                 if (this.readyState === 4) {
                     var json = JSON.parse(this.responseText);
                     document.getElementById("thumb").src = json.path;
-
+                    console.log(json);
                 }
             });
             xhr.open("POST", "proxy.php");
@@ -28,7 +28,27 @@ function Run() {
             }
             if (JData.type == 'side') {
                 var count = 0;
-                JData.data.forEach(element => {
+                document.getElementById("thumb").hidden = true;
+                document.getElementById('carouselExampleControls').hidden = false;
+                JData.data.forEach((element, index) => {
+                    let slide = document.createElement("div");
+                    if (index == 0) {
+                        slide.className = "carousel-item active";
+                    } else {
+                        slide.className = "carousel-item";
+                    }
+                    var data = new FormData();
+                    data.append("file", element.file);
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("POST", "proxy.php");
+                    xhr.send(data);
+                    xhr.addEventListener("readystatechange", function () {
+                        if (this.readyState === 4) {
+                            var json = JSON.parse(this.responseText);
+                            slide.innerHTML = "<img class=\"d-block w-100\" src=" + json.path + ">";
+                        }
+                    });
+                    document.getElementById('carousel-child').appendChild(slide);
                     let btn = document.createElement("a");
                     btn.className = "btn p-1 m-1";
                     btn.style.backgroundColor = "#00b0ff";
