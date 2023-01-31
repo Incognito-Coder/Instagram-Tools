@@ -45,7 +45,11 @@ function Run() {
                     xhr.addEventListener("readystatechange", function () {
                         if (this.readyState === 4) {
                             var json = JSON.parse(this.responseText);
-                            slide.innerHTML = "<img class=\"d-block w-100\" src=" + json.path + ">";
+                            if (element.type == "image") {
+                                slide.innerHTML = "<img class=\"d-block w-100\" src=" + json.path + ">";
+                            } else if (element.type == "video") {
+                                slide.innerHTML = "<video class=\"d-block w-100\" controls\"><source src=" + json.path + " type=\"video/mp4\"/></video>";
+                            }
                         }
                     });
                     document.getElementById('carousel-child').appendChild(slide);
