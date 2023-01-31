@@ -38,6 +38,9 @@ then open http://localhost:8000/ in browser,now you can use PWA in your local we
 * Codes rewrited from scratch
 * All requests are now handled over Guzzle
 * Fixed Highlight detection
+### v3.2
+* Now PWA can play carousel photos and videos
+* some javascript bugs fixed
 ## Credits
 Developer : Incognito Coder & Arash Ariaye \
 if you enjoy my content, consider to buy me a coffee here:
