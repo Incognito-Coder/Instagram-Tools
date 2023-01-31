@@ -5,7 +5,6 @@ function Run() {
             var JData = JSON.parse(this.responseText);
             document.getElementById("caption").hidden = false;
             document.getElementById("files").hidden = false;
-            document.getElementById("thumb").hidden = false;
             var prettyCaption = JData.caption;
             document.getElementById("caption").innerHTML = prettyCaption.replace('\n', '<br>');
             var data = new FormData();
@@ -14,8 +13,10 @@ function Run() {
             xhr.addEventListener("readystatechange", function () {
                 if (this.readyState === 4) {
                     var json = JSON.parse(this.responseText);
-                    document.getElementById("thumb").src = json.path;
-                    console.log(json);
+                    if (JData.type == 'image') {
+                        document.getElementById("thumb").hidden = false;
+                        document.getElementById("thumb").src = json.path;
+                    }
                 }
             });
             xhr.open("POST", "proxy.php");
@@ -76,7 +77,6 @@ function Run() {
     };
     xmlhttp.open("GET", "instagram.php?link=" + document.getElementById("url-field").value, true);
     xmlhttp.send();
-
 }
 
 function isUnicode(str) {
