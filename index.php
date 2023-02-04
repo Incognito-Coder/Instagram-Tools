@@ -48,7 +48,7 @@ header('Expires: 0');
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
-        <img id="thumb" class="img-fluid shadow bg-light text-dark p-2 mb-2 rounded" hidden />
+        <img id="thumb" class="w-100 shadow bg-light text-dark p-2 mb-2 rounded" hidden />
         <p id="caption" class="shadow bg-light text-dark p-2 rounded" hidden></p>
         <div id="files" class="shadow bg-light text-dark p-2 rounded" hidden>Files:
         </div>
@@ -81,7 +81,6 @@ header('Expires: 0');
             $("#files").show('4500');
 
         });
-
         navigator.clipboard.readText()
 
             // (A2) PUT CLIPBOARD INTO TEXT FIELD
@@ -102,6 +101,5 @@ header('Expires: 0');
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
-
 
 </html>
