@@ -3,10 +3,17 @@ function Run() {
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             var JData = JSON.parse(this.responseText);
-            document.getElementById("caption").hidden = false;
             document.getElementById("files").hidden = false;
-            var prettyCaption = JData.caption;
-            document.getElementById("caption").innerHTML = prettyCaption.replace('\n', '<br>');
+            if (JData.caption !== null) {
+                document.getElementById("caption").innerHTML = JData.caption.replace('\n', '<br>');
+                document.getElementById("caption").hidden = false;
+                if (isUnicode(document.getElementById('caption').textContent)) {
+                    document.getElementById('caption').style.direction = 'rtl';
+                }
+                else {
+                    document.getElementById('caption').style.direction = 'ltr';
+                }
+            }
             var data = new FormData();
             data.append("file", JData.file);
             var xhr = new XMLHttpRequest();
@@ -21,12 +28,6 @@ function Run() {
             });
             xhr.open("POST", "proxy.php");
             xhr.send(data);
-            if (isUnicode(document.getElementById('caption').textContent)) {
-                document.getElementById('caption').style.direction = 'rtl';
-            }
-            else {
-                document.getElementById('caption').style.direction = 'ltr';
-            }
             if (JData.type == 'side') {
                 var count = 0;
                 document.getElementById("thumb").hidden = true;
@@ -78,7 +79,6 @@ function Run() {
     xmlhttp.open("GET", "instagram.php?link=" + document.getElementById("url-field").value, true);
     xmlhttp.send();
 }
-
 function isUnicode(str) {
     var letters = [];
     for (var i = 0; i <= str.length; i++) {
