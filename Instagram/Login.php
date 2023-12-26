@@ -22,10 +22,10 @@ class Login
     {
         $Request = $this->client->request('GET', Uri::BASE_URL, [
             'headers' => [
-                'user-agent' => Uri::UA_IG_ANDROID,
+                'user-agent' => Uri::UA_LINUX,
             ],
         ]);
-        preg_match('/\\\"csrf_token\\\":\\\"(.*?)\\\"/', $Request->getBody(), $matches);
+        preg_match('/"csrf_token":"(.*?)"/', $Request->getBody(), $matches);
         if (!isset($matches[1])) {
             throw new Exception('Unable to extract JSON data');
         }
@@ -42,7 +42,7 @@ class Login
                     'cookie'      => 'ig_cb=1; csrftoken=' . $data,
                     'referer'     => Uri::BASE_URL,
                     'x-csrftoken' => $data,
-                    'user-agent'  => Uri::UA_IG_ANDROID,
+                    'user-agent'  => Uri::UA_LINUX,
                 ],
                 'cookies'     => $cookieJar,
             ]);
