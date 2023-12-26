@@ -19,6 +19,10 @@ $session = new InstagramPHPLogin(new Client(), 'user', 'pass');
 $session->SessionLogin();
 ```
 ## Local Deploy
+First install [composer](https://getcomposer.org/) on your system,then run:
+```bash
+composer install
+```
 ```bash
 cd Instagram-Tools && php -S localhost:8000
 ```
@@ -29,6 +33,10 @@ then open http://localhost:8000/ in browser,now you can use PWA in your local we
 * Download Highlights
 * Download Story
 # Changes
+
+<details>
+<summary>Click to see changelogs.</summary>
+
 ### v2.2
 * Now is be PWA
 ### v2.5
@@ -41,6 +49,15 @@ then open http://localhost:8000/ in browser,now you can use PWA in your local we
 ### v3.2
 * Now PWA can play carousel photos and videos
 * some javascript bugs fixed
+### v3.5
+Note: *this is final build for 2023*
+* Changed UserAgent somewhere
+* Fixed login CSRF data
+* Updated login ajax url
+* New regex pattern for getting **media id**
+* Bumped guzzle version to 7.8.1
+</details>
+
 ## Credits
 Developer : Incognito Coder & Arash Ariaye \
 if you enjoy my content, consider to buy me a coffee here:
