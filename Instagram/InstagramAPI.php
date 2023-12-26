@@ -28,7 +28,7 @@ class InstagramAPI
                 'accept-language' => 'en-US,en;q=0.9,fa-IR;q=0.8,fa;q=0.7',
                 'cache-control' => 'max-age=0',
                 'sec-ch-prefers-color-scheme' => 'light',
-                'sec-ch-ua' => '" Not A;Brand";v="99", "Chromium";v="102", "Google Chrome";v="102"',
+                'sec-ch-ua' => '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
                 'sec-ch-ua-mobile' => '?0',
                 'sec-ch-ua-platform' => '"Windows"',
                 'sec-fetch-dest' => 'document',
@@ -36,12 +36,12 @@ class InstagramAPI
                 'sec-fetch-site' => 'same-origin',
                 'sec-fetch-user' => '?1',
                 'upgrade-insecure-requests' => '1',
-                'user-agent' => Uri::UA_IG_ANDROID,
+                'user-agent' => Uri::UA_LINUX,
                 'viewport-width' => '1920'
             ],
             'cookies' => $this->cookie
         ];
-        preg_match('/{"media_id":"(.*?)",/', $this->SendRequest('GET', $url, $options), $matches);
+        preg_match('/{"media_id":"(.*?)"/', $this->SendRequest('GET', $url, $options), $matches);
         return $matches[1];
     }
     public function getReelsID($url)
@@ -53,7 +53,7 @@ class InstagramAPI
                 'accept-language' => 'en-US,en;q=0.9,fa-IR;q=0.8,fa;q=0.7',
                 'cache-control' => 'max-age=0',
                 'sec-ch-prefers-color-scheme' => 'light',
-                'sec-ch-ua' => '" Not A;Brand";v="99", "Chromium";v="102", "Google Chrome";v="102"',
+                'sec-ch-ua' => '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
                 'sec-ch-ua-mobile' => '?0',
                 'sec-ch-ua-platform' => '"Windows"',
                 'sec-fetch-dest' => 'document',
@@ -61,7 +61,7 @@ class InstagramAPI
                 'sec-fetch-site' => 'same-origin',
                 'sec-fetch-user' => '?1',
                 'upgrade-insecure-requests' => '1',
-                'user-agent' => Uri::UA_IG_ANDROID,
+                'user-agent' => Uri::UA_LINUX,
                 'viewport-width' => '1920'
             ],
             'cookies' => $this->cookie
@@ -86,7 +86,7 @@ class InstagramAPI
             'headers' => [
                 'accept' => '*/*',
                 'accept-language' => 'en-US,en;q=0.9,fa-IR;q=0.8,fa;q=0.7',
-                'user-agent' => Uri::UA_IG_ANDROID,
+                'user-agent' => Uri::UA_LINUX,
                 'x-ig-app-id' => '936619743392459'
             ],
             'cookies' => $this->cookie
@@ -99,7 +99,7 @@ class InstagramAPI
             'headers' => [
                 'accept' => '*/*',
                 'accept-language' => 'en-US,en;q=0.9,fa-IR;q=0.8,fa;q=0.7',
-                'user-agent' => Uri::UA_IG_ANDROID,
+                'user-agent' => Uri::UA_LINUX,
                 'x-ig-app-id' => '936619743392459'
             ],
             'cookies' => $this->cookie
