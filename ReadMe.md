@@ -1,5 +1,6 @@
 # Instagram Basic Tools
 Little php class for Instagram Scrapping.\
+Telegram Bot Demo [@InstaTakerBot](https://t.me/InstaTakerBot) \
 **Note** : \
 _Don't forgot to set your own Coockie in Script._ [ **Deprecated** ]
 
@@ -31,6 +32,7 @@ then open http://localhost:8000/ in browser,now you can use PWA in your local we
 * Return Account Info (Profile)
 * Download Media
 * Download Highlights
+* Download Reels
 * Download Story
 # Changes
 
@@ -56,11 +58,14 @@ Note: *this is final build for 2023*
 * Updated login ajax url
 * New regex pattern for getting **media id**
 * Bumped guzzle version to 7.8.1
+### v3.6
+* Fixed story scapping
+* Some changes in Highlights regex pattern
 </details>
 
 ## Credits
 Developer : Incognito Coder & Arash Ariaye \
 if you enjoy my content, consider to buy me a coffee here:
 1. Donate [ZarinPal](https://zarinp.al/@incognito)
-2. USDT(**TRC20**) : `TWCgNwinrFXpvVr7iDAbx1qBCBitJ6ttB7`
-3. BTC : `343x2iWnWBFjyLn6TUQTjdGW8ZExMD8mmp`
+2. USDT(**TRC20**) : `TD5XNhZPuVoc6ZnadbrQenuur3WWKwkFqV`
+3. TRON(**TRX**) : `TD5XNhZPuVoc6ZnadbrQenuur3WWKwkFqV`

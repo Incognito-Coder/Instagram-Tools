@@ -66,7 +66,7 @@ class InstagramAPI
             ],
             'cookies' => $this->cookie
         ];
-        preg_match('/"props":{"user":{"id":"(.*?)"/', $this->SendRequest('GET', $url, $options), $matches);
+        preg_match('/"user_id":"(.*?)"}/', $this->SendRequest('GET', $url, $options), $matches);
         return $matches[1];
     }
     public function fetchStory($user_id)
@@ -109,8 +109,7 @@ class InstagramAPI
     public function fetchHighlight($url, $opt = 'first_response')
     {
         $fetch = $this->SendRequest('GET', $url, ['cookies' => $this->cookie]);
-        preg_match('/"highlight":(.*?),"page_logging"/', $fetch, $matches);
-        $data = json_decode($matches[1]);
+        preg_match('/"highlight:(.*?)","page_logging"/', $fetch, $matches);
         switch ($opt) {
             case 'second_response';
                 $options = [
@@ -123,14 +122,14 @@ class InstagramAPI
                     'cookies' => $this->cookie
                 ];
                 try {
-                    $result = json_decode($this->SendRequest('GET', Uri::REELS_URL . 'highlight%3A' . $data->id, $options));
+                    $result = json_decode($this->SendRequest('GET', Uri::REELS_URL . 'highlight%3A' . $matches[1], $options));
                 } catch (Exception $e) {
                     preg_match('/www.instagram.com\/s\/(.+)[?]/', $url, $matches);
                     $result = json_decode($this->SendRequest('GET', Uri::REELS_URL . base64_decode($matches[1]), $options));
                 }
                 break;
             default;
-                $result = $data->id;
+                $result = $matches[1];
                 break;
         }
         return $result;
