@@ -23,7 +23,8 @@ class Instagram
                 "name" => $user->full_name,
                 "id" => $user->id,
                 "bio" => $user->biography,
-                "website" => $user->external_url, "account" => ["business" => $user->is_business_account, "professional" => $user->is_professional_account, "category" => $user->category_name],
+                "website" => $user->external_url,
+                "account" => ["business" => $user->is_business_account, "professional" => $user->is_professional_account, "category" => $user->category_name],
                 "profile_hd" => $user->profile_pic_url_hd,
                 "followers" => $user->edge_followed_by->count,
                 "following" => $user->edge_follow->count
@@ -43,14 +44,14 @@ class Instagram
             $data = $jayson->items[0];
             if ($data->media_type == 2) {
                 if (empty($data->caption->text))
-                    return json_encode(['status' => true, 'type' => 'video', 'caption' => null, 'like' => $data->like_count, 'comment' => $data->comment_count, 'file' => $data->video_versions[0]->url], 128);
+                    return json_encode(['status' => true, 'type' => 'video', 'caption' => null, 'like' => $data->like_count, 'comment' => $data->comment_count, 'view' => $data->play_count, 'file' => $data->video_versions[0]->url], 128);
                 else
-                    return json_encode(['status' => true, 'type' => 'video', 'caption' => $data->caption->text, 'like' => $data->like_count, 'comment' => $data->comment_count, 'file' => $data->video_versions[0]->url], 128);
+                    return json_encode(['status' => true, 'type' => 'video', 'caption' => $data->caption->text, 'like' => $data->like_count, 'comment' => $data->comment_count, 'view' => $data->play_count, 'file' => $data->video_versions[0]->url], 128);
             } elseif ($data->media_type == 1) {
                 if (empty($data->caption->text))
-                    return json_encode(['status' => true, 'type' => 'image', 'caption' => null, 'like' => $data->like_count, 'comment' => $data->comment_count, 'file' => $data->image_versions2->candidates[0]->url], 128);
+                    return json_encode(['status' => true, 'type' => 'image', 'caption' => null, 'like' => $data->like_count, 'comment' => $data->comment_count, 'view' => $data->play_count, 'file' => $data->image_versions2->candidates[0]->url], 128);
                 else
-                    return json_encode(['status' => true, 'type' => 'image', 'caption' => $data->caption->text, 'like' => $data->like_count, 'comment' => $data->comment_count, 'file' => $data->image_versions2->candidates[0]->url], 128);
+                    return json_encode(['status' => true, 'type' => 'image', 'caption' => $data->caption->text, 'like' => $data->like_count, 'comment' => $data->comment_count, 'view' => $data->play_count, 'file' => $data->image_versions2->candidates[0]->url], 128);
             } elseif ($data->media_type == 8) {
                 $childrens = [];
                 foreach ($data->carousel_media as $child) {
@@ -61,9 +62,9 @@ class Instagram
                     }
                 }
                 if (empty($data->caption->text))
-                    return json_encode(['status' => true, 'type' => 'side', 'caption' => null, 'like' => $data->like_count, 'comment' => $data->comment_count, 'data' => $childrens], 128);
+                    return json_encode(['status' => true, 'type' => 'side', 'caption' => null, 'like' => $data->like_count, 'comment' => $data->comment_count, 'view' => $data->play_count, 'data' => $childrens], 128);
                 else
-                    return json_encode(['status' => true, 'type' => 'side', 'caption' => $data->caption->text, 'like' => $data->like_count, 'comment' => $data->comment_count, 'data' => $childrens], 128);
+                    return json_encode(['status' => true, 'type' => 'side', 'caption' => $data->caption->text, 'like' => $data->like_count, 'comment' => $data->comment_count, 'view' => $data->play_count, 'data' => $childrens], 128);
             }
         } else {
             return json_encode(['status' => false], 128);

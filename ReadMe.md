@@ -61,6 +61,9 @@ Note: *this is final build for 2023*
 ### v3.6
 * Fixed story scapping
 * Some changes in Highlights regex pattern
+### v3.7
+* Returning post play count
+* Bumped guzzle version to 7.9.2
 </details>
 
 ## Credits
@@ -69,3 +72,4 @@ if you enjoy my content, consider to buy me a coffee here:
 1. Donate [ZarinPal](https://zarinp.al/@incognito)
 2. USDT(**TRC20**) : `TD5XNhZPuVoc6ZnadbrQenuur3WWKwkFqV`
 3. TRON(**TRX**) : `TD5XNhZPuVoc6ZnadbrQenuur3WWKwkFqV`
+4. TON(**TON**) : `UQBAL2lkifBy7H8-3M7khJXu8w2TqjvJ8tSbhFRkNAR_7mQJ`
