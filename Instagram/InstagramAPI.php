@@ -66,7 +66,7 @@ class InstagramAPI
             ],
             'cookies' => $this->cookie
         ];
-        preg_match('/"user_id":"(.*?)"}/', $this->SendRequest('GET', $url, $options), $matches);
+        preg_match('/"user_id":"(.*?)"/', $this->SendRequest('GET', $url, $options), $matches);
         return $matches[1];
     }
     public function fetchStory($user_id)

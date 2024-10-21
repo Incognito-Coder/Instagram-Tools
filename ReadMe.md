@@ -64,6 +64,9 @@ Note: *this is final build for 2023*
 ### v3.7
 * Returning post play count
 * Bumped guzzle version to 7.9.2
+### v3.8
+* Fix of regex in getReelsID func
+* Updated UserAgents
 </details>
 
 ## Credits
