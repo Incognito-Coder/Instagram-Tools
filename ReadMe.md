@@ -67,6 +67,8 @@ Note: *this is final build for 2023*
 ### v3.8
 * Fix of regex in getReelsID func
 * Updated UserAgents
+### v3.9
+* Update Instagram android useragent
 </details>
 
 ## Credits
