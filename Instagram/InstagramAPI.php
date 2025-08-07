@@ -119,7 +119,7 @@ class InstagramAPI
             ],
             'cookies' => $this->cookie
         ];
-        return $this->SendRequest('GET', "https://www.instagram.com/$username/", $options);
+        return $this->SendRequest('GET', Uri::USER_PROFILE_URL . $username, $options);
     }
     public function fetchHighlight($url, $opt = 'first_response')
     {
@@ -137,10 +137,10 @@ class InstagramAPI
                     'cookies' => $this->cookie
                 ];
                 try {
-                    $result = json_decode($this->SendRequest('GET', "https://www.instagram.com/reels/highlight%3A" . $matches[1], $options));
+                    $result = json_decode($this->SendRequest('GET', Uri::REELS_URL . 'highlight%3A' . $matches[1], $options));
                 } catch (Exception $e) {
                     preg_match('/www.instagram.com\/s\/(.+)[?]/', $url, $matches2);
-                    $result = json_decode($this->SendRequest('GET', "https://www.instagram.com/reels/" . base64_decode($matches2[1]), $options));
+                    $result = json_decode($this->SendRequest('GET', Uri::REELS_URL . base64_decode($matches2[1]), $options));
                 }
                 break;
             default:
