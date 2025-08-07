@@ -2,19 +2,34 @@
 
 namespace InstagramPHP;
 
+require __DIR__ . '/../vendor/autoload.php';
+
+use Dotenv\Dotenv;
 use Exception;
 use GuzzleHttp\Client;
+
+$dotenv = Dotenv::createImmutable(__DIR__)->safeLoad();
 
 class InstagramAPI
 {
     private $cookie;
+    private $host;
+    private $port;
+    private $proxy;
+
     public function __construct(
-        mixed $cookie
+        mixed $cookie,
     ) {
         $this->cookie = $cookie;
+        $this->host = $_ENV['PROXY_HOST'] ?? getenv('PROXY_HOST') ?? '';
+        $this->port = $_ENV['PROXY_PORT'] ?? getenv('PROXY_PORT') ?? '';
+        $this->proxy = (!empty($this->host) && !empty($this->port)) ? "http://{$this->host}:{$this->port}" : null;
     }
     function SendRequest(string $method, string $url, array $opts)
     {
+        if ($this->proxy) {
+            $opts['proxy'] = $this->proxy;
+        }
         $client = new Client();
         $request = $client->request($method, $url, $opts);
         return $request->getBody();
@@ -42,7 +57,7 @@ class InstagramAPI
             'cookies' => $this->cookie
         ];
         preg_match('/{"media_id":"(.*?)"/', $this->SendRequest('GET', $url, $options), $matches);
-        return $matches[1];
+        return $matches[1] ?? null;
     }
     public function getReelsID($url)
     {
@@ -67,7 +82,7 @@ class InstagramAPI
             'cookies' => $this->cookie
         ];
         preg_match('/"user_id":"(.*?)"/', $this->SendRequest('GET', $url, $options), $matches);
-        return $matches[1];
+        return $matches[1] ?? null;
     }
     public function fetchStory($user_id)
     {
@@ -104,14 +119,14 @@ class InstagramAPI
             ],
             'cookies' => $this->cookie
         ];
-        return $this->SendRequest('GET', Uri::USER_PROFILE_URL . $username, $options);
+        return $this->SendRequest('GET', "https://www.instagram.com/$username/", $options);
     }
     public function fetchHighlight($url, $opt = 'first_response')
     {
         $fetch = $this->SendRequest('GET', $url, ['cookies' => $this->cookie]);
         preg_match('/"highlight:(.*?)","page_logging"/', $fetch, $matches);
         switch ($opt) {
-            case 'second_response';
+            case 'second_response':
                 $options = [
                     'headers' => [
                         'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -122,14 +137,14 @@ class InstagramAPI
                     'cookies' => $this->cookie
                 ];
                 try {
-                    $result = json_decode($this->SendRequest('GET', Uri::REELS_URL . 'highlight%3A' . $matches[1], $options));
+                    $result = json_decode($this->SendRequest('GET', "https://www.instagram.com/reels/highlight%3A" . $matches[1], $options));
                 } catch (Exception $e) {
-                    preg_match('/www.instagram.com\/s\/(.+)[?]/', $url, $matches);
-                    $result = json_decode($this->SendRequest('GET', Uri::REELS_URL . base64_decode($matches[1]), $options));
+                    preg_match('/www.instagram.com\/s\/(.+)[?]/', $url, $matches2);
+                    $result = json_decode($this->SendRequest('GET', "https://www.instagram.com/reels/" . base64_decode($matches2[1]), $options));
                 }
                 break;
-            default;
-                $result = $matches[1];
+            default:
+                $result = $matches[1] ?? null;
                 break;
         }
         return $result;

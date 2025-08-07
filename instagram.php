@@ -6,6 +6,9 @@ require 'vendor/autoload.php';
 
 use GuzzleHttp\Cookie\FileCookieJar;
 use InstagramPHP\InstagramAPI;
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__)->safeLoad();
 
 $_COOKIE = new FileCookieJar('cookies.txt');
 class Instagram
