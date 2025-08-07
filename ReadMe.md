@@ -19,6 +19,15 @@ use InstagramPHP\Login as InstagramPHPLogin;
 $session = new InstagramPHPLogin(new Client(), 'user', 'pass');
 $session->SessionLogin();
 ```
+In version 4.0 you can set variables in `.env` file instead of php source code. \
+Here is your environment variable table:
+
+| Variable   | Example Value | Description           |
+| ---------- | ------------- | --------------------- |
+| PROXY_HOST | 127.0.0.1     | Proxy server hostname |
+| PROXY_PORT | 8080          | Proxy server port     |
+| username   | your_username | Instagram username    |
+| password   | your_password | Instagram password    |
 ## Local Deploy
 First install [composer](https://getcomposer.org/) on your system,then run:
 ```bash
@@ -69,6 +78,9 @@ Note: *this is final build for 2023*
 * Updated UserAgents
 ### v3.9
 * Update Instagram android useragent
+### v4.0
+* Add proxy support and environment configuration for Instagram API
+* Some code improvments.
 </details>
 
 ## Credits
