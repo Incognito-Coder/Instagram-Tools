@@ -1,45 +1,47 @@
-const cacheName = 'pwa_v1';
-const includeToCache = [
-  '/',
-  '/index.php',
-  '/image/instagram.svg',
-  '/css/styles.css',
-  '/js/main.js'
+const CACHE_NAME = 'instataker_pwa_v2';
+const ASSETS_TO_CACHE = [
+    './',
+    './index.php',
+    './css/styles.css',
+    './js/main.js',
+    './js/script.js',
+    './manifest.json'
 ];
 
-/* Start the service worker and cache all of the app's content */
-self.addEventListener('install', e => {
-
-  self.skipWaiting();
-
-  e.waitUntil(
-    caches.open(cacheName).then(cache => {
-      return cache.addAll(includeToCache);
-    })
-  );
-});
-
-/* Serve cached content when offline */
-self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(response => {
-      return response || fetch(e.request);
-    })
-  );
+self.addEventListener('install', event => {
+    self.skipWaiting();
+    event.waitUntil(
+        caches.open(CACHE_NAME).then(cache => {
+            return cache.addAll(ASSETS_TO_CACHE);
+        })
+    );
 });
 
 self.addEventListener('activate', event => {
-  // delete any caches that aren't in cacheName
-  // which will get rid of version
-  event.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.map(key => {
-        if (cacheName !== key) {
-          return caches.delete(key);
-        }
-      })
-    )).then(() => {
-      console.log(cacheName + ' now ready to handle fetches!');
-    })
-  );
+    event.waitUntil(
+        caches.keys().then(keys => {
+            return Promise.all(
+                keys.map(key => {
+                    if (key !== CACHE_NAME) {
+                        return caches.delete(key);
+                    }
+                })
+            );
+        }).then(() => self.clients.claim())
+    );
+});
+
+self.addEventListener('fetch', event => {
+    // Only cache GET requests for static assets, skip API requests
+    if (event.request.method !== 'GET' || event.request.url.includes('instagram.php') || event.request.url.includes('proxy.php')) {
+        return;
+    }
+
+    event.respondWith(
+        caches.match(event.request).then(cachedResponse => {
+            return cachedResponse || fetch(event.request).catch(() => {
+                return caches.match('./index.php');
+            });
+        })
+    );
 });

@@ -1,138 +1,284 @@
 <?php
-header('Content-type: application/json');
-header('Access-Control-Allow-Origin: *');
-error_reporting(0);
-require 'vendor/autoload.php';
 
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+
+require __DIR__ . '/vendor/autoload.php';
+
+use Dotenv\Dotenv;
 use GuzzleHttp\Cookie\FileCookieJar;
 use InstagramPHP\InstagramAPI;
-use Dotenv\Dotenv;
 
-$dotenv = Dotenv::createImmutable(__DIR__)->safeLoad();
+// Load environment variables if .env exists
+if (file_exists(__DIR__ . '/.env')) {
+    Dotenv::createImmutable(__DIR__)->safeLoad();
+}
 
-$_COOKIE = new FileCookieJar('cookies.txt');
-class Instagram
+class InstagramService
 {
+    private InstagramAPI $api;
+    public ?string $highlightUrl = null;
 
-    function igInfo($user)
+    public function __construct()
     {
-        $ig = new InstagramAPI($_COOKIE);
-        $response = $ig->fetchProfile($user);
-        if ($response != '{}') {
-            $jayson = json_decode($response);
-            $user = $jayson->data->user;
-            $json = [
-                "status" => true,
-                "name" => $user->full_name,
-                "id" => $user->id,
-                "bio" => $user->biography,
-                "website" => $user->external_url,
-                "account" => ["business" => $user->is_business_account, "professional" => $user->is_professional_account, "category" => $user->category_name],
-                "profile_hd" => $user->profile_pic_url_hd,
-                "followers" => $user->edge_followed_by->count,
-                "following" => $user->edge_follow->count
-            ];
-            return json_encode($json, 128);
-        } else {
-            return json_encode(['status' => false], 128);
+        $cookieJar = new FileCookieJar(__DIR__ . '/cookies.txt');
+        $this->api = new InstagramAPI($cookieJar);
+    }
+
+    private function jsonResponse(array $data, int $statusCode = 200): string
+    {
+        http_response_code($statusCode);
+        return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    }
+
+    public function getProfileInfo(string $username): string
+    {
+        try {
+            $raw = $this->api->fetchProfile($username);
+            $data = json_decode($raw);
+
+            if (!isset($data->data->user)) {
+                return $this->jsonResponse(['status' => false, 'message' => 'User profile not found or private.'], 404);
+            }
+
+            $user = $data->data->user;
+            $id = $user->id ?? $user->pk ?? '';
+            $followers = $user->edge_followed_by->count ?? $user->follower_count ?? $user->followers ?? 0;
+            $following = $user->edge_follow->count ?? $user->following_count ?? $user->following ?? 0;
+            $mediaCount = $user->edge_owner_to_timeline_media->count ?? $user->media_count ?? $user->posts ?? 0;
+
+            return $this->jsonResponse([
+                'status' => true,
+                'type' => 'profile',
+                'name' => $user->full_name ?? '',
+                'username' => $user->username ?? $username,
+                'id' => (string) $id,
+                'bio' => $user->biography ?? '',
+                'website' => $user->external_url ?? null,
+                'account' => [
+                    'business' => (bool)($user->is_business_account ?? false),
+                    'professional' => (bool)($user->is_professional_account ?? false),
+                    'category' => $user->category_name ?? null,
+                ],
+                'profile_hd' => $user->profile_pic_url_hd ?? $user->profile_pic_url ?? '',
+                'followers' => $followers,
+                'following' => $following,
+                'media_count' => $mediaCount,
+                'is_verified' => (bool)($user->is_verified ?? false),
+            ]);
+        } catch (Exception $e) {
+            return $this->jsonResponse(['status' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
-    function igSave($url)
+    public function getMedia(string $url): string
     {
-        $ig = new InstagramAPI($_COOKIE);
-        $response = $ig->fetchData($ig->getMediaID($url));
-        if ($response != '{}') {
+        try {
+            $mediaId = $this->api->getMediaID($url);
+            if (!$mediaId) {
+                return $this->jsonResponse(['status' => false, 'message' => 'Could not extract Media ID from URL.'], 400);
+            }
+
+            $response = $this->api->fetchData($mediaId, $url);
             $jayson = json_decode($response);
-            $data = $jayson->items[0];
-            if ($data->media_type == 2) {
-                if (empty($data->caption->text))
-                    return json_encode(['status' => true, 'type' => 'video', 'caption' => null, 'like' => $data->like_count, 'comment' => $data->comment_count, 'view' => $data->play_count, 'file' => $data->video_versions[0]->url], 128);
-                else
-                    return json_encode(['status' => true, 'type' => 'video', 'caption' => $data->caption->text, 'like' => $data->like_count, 'comment' => $data->comment_count, 'view' => $data->play_count, 'file' => $data->video_versions[0]->url], 128);
-            } elseif ($data->media_type == 1) {
-                if (empty($data->caption->text))
-                    return json_encode(['status' => true, 'type' => 'image', 'caption' => null, 'like' => $data->like_count, 'comment' => $data->comment_count, 'view' => $data->play_count, 'file' => $data->image_versions2->candidates[0]->url], 128);
-                else
-                    return json_encode(['status' => true, 'type' => 'image', 'caption' => $data->caption->text, 'like' => $data->like_count, 'comment' => $data->comment_count, 'view' => $data->play_count, 'file' => $data->image_versions2->candidates[0]->url], 128);
-            } elseif ($data->media_type == 8) {
-                $childrens = [];
-                foreach ($data->carousel_media as $child) {
-                    if ($child->media_type == 2) {
-                        array_push($childrens, ['type' => 'video', 'file' => $child->video_versions[0]->url]);
-                    } else {
-                        array_push($childrens, ['type' => 'image', 'file' => $child->image_versions2->candidates[0]->url]);
+
+            if (!isset($jayson->items[0])) {
+                return $this->jsonResponse(['status' => false, 'message' => 'Media item unavailable or private.'], 404);
+            }
+
+            $item = $jayson->items[0];
+            $captionText = $item->caption->text ?? null;
+            $likes = $item->like_count ?? 0;
+            $comments = $item->comment_count ?? 0;
+            $views = $item->play_count ?? $item->view_count ?? null;
+
+            // Media types: 1 = Image, 2 = Video, 8 = Carousel / Sidecar
+            if ($item->media_type == 2) {
+                return $this->jsonResponse([
+                    'status' => true,
+                    'type' => 'video',
+                    'caption' => $captionText,
+                    'like' => $likes,
+                    'comment' => $comments,
+                    'view' => $views,
+                    'file' => $item->video_versions[0]->url ?? null,
+                ]);
+            } elseif ($item->media_type == 1) {
+                return $this->jsonResponse([
+                    'status' => true,
+                    'type' => 'image',
+                    'caption' => $captionText,
+                    'like' => $likes,
+                    'comment' => $comments,
+                    'view' => $views,
+                    'file' => $item->image_versions2->candidates[0]->url ?? null,
+                ]);
+            } elseif ($item->media_type == 8) {
+                $children = [];
+                if (!empty($item->carousel_media)) {
+                    foreach ($item->carousel_media as $child) {
+                        if ($child->media_type == 2) {
+                            $children[] = [
+                                'type' => 'video',
+                                'file' => $child->video_versions[0]->url ?? null,
+                            ];
+                        } else {
+                            $children[] = [
+                                'type' => 'image',
+                                'file' => $child->image_versions2->candidates[0]->url ?? null,
+                            ];
+                        }
                     }
                 }
-                if (empty($data->caption->text))
-                    return json_encode(['status' => true, 'type' => 'side', 'caption' => null, 'like' => $data->like_count, 'comment' => $data->comment_count, 'view' => $data->play_count, 'data' => $childrens], 128);
-                else
-                    return json_encode(['status' => true, 'type' => 'side', 'caption' => $data->caption->text, 'like' => $data->like_count, 'comment' => $data->comment_count, 'view' => $data->play_count, 'data' => $childrens], 128);
+                return $this->jsonResponse([
+                    'status' => true,
+                    'type' => 'side',
+                    'caption' => $captionText,
+                    'like' => $likes,
+                    'comment' => $comments,
+                    'view' => $views,
+                    'data' => $children,
+                ]);
             }
-        } else {
-            return json_encode(['status' => false], 128);
+
+            return $this->jsonResponse(['status' => false, 'message' => 'Unsupported media type.'], 400);
+        } catch (Exception $e) {
+            return $this->jsonResponse(['status' => false, 'message' => $e->getMessage()], 500);
         }
     }
-    public $highlight_url;
-    function isHighlight($url)
+
+    public function isHighlight(string $url): bool
     {
         if (str_contains($url, 'highlight')) {
-            $this->highlight_url = $url;
+            $this->highlightUrl = $url;
             return true;
-        } else {
-            preg_match('/www.instagram.com\/s\/(.+)[?]/', $url, $matches);
-            if (str_contains(base64_decode($matches[1]), 'highlight')) {
-                $this->highlight_url = $url;
+        }
+
+        if (preg_match('/www\.instagram\.com\/s\/(.+)[?\/]?/', $url, $matches)) {
+            $decoded = base64_decode($matches[1]);
+            if (str_contains($decoded, 'highlight')) {
+                $this->highlightUrl = $url;
                 return true;
-            } else {
-                return false;
             }
         }
+
+        return false;
     }
-    function igHighlight($url)
+
+    public function getHighlight(string $url): string
     {
-        $ig = new InstagramAPI($_COOKIE);
-        $response = $ig->fetchHighlight($url);
-        $response2 = $ig->fetchHighlight($url, 'second_response');
-        $childrens = [];
-        $hid = 'highlight:' . $response;
-        foreach ($response2->reels->$hid->items as $child) {
-            if ($child->media_type == 2) {
-                array_push($childrens, ['type' => 'video', 'file' => $child->video_versions[0]->url]);
-            } else {
-                array_push($childrens, ['type' => 'image', 'file' => $child->image_versions2->candidates[0]->url]);
+        try {
+            $response = $this->api->fetchHighlight($url);
+            $response2 = $this->api->fetchHighlight($url, 'second_response');
+
+            if (!$response2 || !isset($response2->reels)) {
+                return $this->jsonResponse(['status' => false, 'message' => 'Highlight content not found.'], 404);
             }
-        }
-        return json_encode(['status' => true, 'type' => 'side', 'caption' => null, 'like' => null, 'comment' => null, 'data' => $childrens], 128);
-    }
-    function igStory($url)
-    {
-        preg_match('/.*([?].*)/', $url, $match);
-        $urlnew =  str_replace($match[1], '/', $url);
-        preg_match('/\/stories\/(.*?)\/(.*?)\//', $urlnew, $matches);
-        $ig = new InstagramAPI($_COOKIE);
-        $response = $ig->fetchStory($ig->getReelsID($urlnew));
-        $jayson = json_decode($response);
-        foreach ($jayson->items as $items) {
-            if ($items->pk == $matches[2]) {
-                if ($items->media_type == 2) {
-                    return json_encode(['status' => true, 'type' => 'video', 'caption' => null, 'file' => $items->video_versions[0]->url], 128);
-                } elseif ($items->media_type == 1) {
-                    return json_encode(['status' => true, 'type' => 'image', 'caption' => null, 'file' => $items->image_versions2->candidates[0]->url], 128);
+
+            $children = [];
+            $hid = 'highlight:' . $response;
+            $items = $response2->reels->$hid->items ?? [];
+
+            foreach ($items as $child) {
+                if ($child->media_type == 2) {
+                    $children[] = ['type' => 'video', 'file' => $child->video_versions[0]->url ?? null];
+                } else {
+                    $children[] = ['type' => 'image', 'file' => $child->image_versions2->candidates[0]->url ?? null];
                 }
             }
+
+            return $this->jsonResponse([
+                'status' => true,
+                'type' => 'side',
+                'caption' => 'Highlight Collection',
+                'like' => null,
+                'comment' => null,
+                'data' => $children,
+            ]);
+        } catch (Exception $e) {
+            return $this->jsonResponse(['status' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getStory(string $url): string
+    {
+        try {
+            $cleanUrl = preg_replace('/\?.*$/', '/', $url);
+            if (!str_ends_with($cleanUrl, '/')) {
+                $cleanUrl .= '/';
+            }
+
+            preg_match('/\/stories\/([^\/]+)\/([^\/]+)\//', $cleanUrl, $matches);
+            $storyPk = $matches[2] ?? null;
+
+            $userId = $this->api->getReelsID($cleanUrl);
+            if (!$userId) {
+                return $this->jsonResponse(['status' => false, 'message' => 'Could not detect Instagram User ID for stories.'], 400);
+            }
+
+            $raw = $this->api->fetchStory($userId);
+            $json = json_decode($raw);
+
+            if (empty($json->items)) {
+                return $this->jsonResponse(['status' => false, 'message' => 'No active stories found for this user.'], 404);
+            }
+
+            foreach ($json->items as $item) {
+                if (!$storyPk || $item->pk == $storyPk) {
+                    if ($item->media_type == 2) {
+                        return $this->jsonResponse([
+                            'status' => true,
+                            'type' => 'video',
+                            'caption' => null,
+                            'file' => $item->video_versions[0]->url ?? null,
+                        ]);
+                    } elseif ($item->media_type == 1) {
+                        return $this->jsonResponse([
+                            'status' => true,
+                            'type' => 'image',
+                            'caption' => null,
+                            'file' => $item->image_versions2->candidates[0]->url ?? null,
+                        ]);
+                    }
+                }
+            }
+
+            // Fallback to first story item if specific PK was expired
+            $first = $json->items[0];
+            $file = ($first->media_type == 2)
+                ? ($first->video_versions[0]->url ?? null)
+                : ($first->image_versions2->candidates[0]->url ?? null);
+
+            return $this->jsonResponse([
+                'status' => true,
+                'type' => ($first->media_type == 2) ? 'video' : 'image',
+                'caption' => null,
+                'file' => $file,
+            ]);
+        } catch (Exception $e) {
+            return $this->jsonResponse(['status' => false, 'message' => $e->getMessage()], 500);
         }
     }
 }
-$instagram = new Instagram();
-if (isset($_GET['user']) && !empty($_GET['user'])) {
-    echo $instagram->igInfo($_GET['user']);
-} elseif (isset($_GET['link']) && !empty($_GET['link'])) {
-    if (str_contains($_GET['link'], 'stories') && !str_contains($_GET['link'], 'highlight')) {
-        echo $instagram->igStory($_GET['link']);
-    } elseif ($instagram->isHighlight($_GET['link'])) {
-        echo $instagram->igHighlight($instagram->highlight_url);
+
+$service = new InstagramService();
+
+if (!empty($_GET['user'])) {
+    echo $service->getProfileInfo(trim($_GET['user']));
+} elseif (!empty($_GET['link'])) {
+    $link = trim($_GET['link']);
+
+    if (str_contains($link, 'stories') && !str_contains($link, 'highlight')) {
+        echo $service->getStory($link);
+    } elseif ($service->isHighlight($link)) {
+        echo $service->getHighlight($service->highlightUrl ?? $link);
     } else {
-        echo $instagram->igSave($_GET['link']);
+        echo $service->getMedia($link);
     }
+} else {
+    echo json_encode([
+        'status' => false,
+        'message' => 'Missing parameter: "link" (URL) or "user" (username) is required.'
+    ], JSON_PRETTY_PRINT);
 }
+

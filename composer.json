@@ -1,11 +1,24 @@
 {
+    "name": "incognito-coder/instagram-tools",
+    "description": "Instagram Scraper & Downloader API and PWA tool for downloading posts, reels, stories, highlights, and profile info.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Incognito Coder"
+        },
+        {
+            "name": "Alireza Ahmand"
+        }
+    ],
     "require": {
         "guzzlehttp/guzzle": "^7.9.2",
         "vlucas/phpdotenv": "^5.6"
     },
-	"autoload": {
-    "psr-4": {
-        "InstagramPHP\\": "Instagram/"
+    "autoload": {
+        "psr-4": {
+            "InstagramPHP\\": "Instagram/"
+        }
     }
-	}
 }
+

@@ -1,92 +1,124 @@
-# Instagram Basic Tools
-Little php class for Instagram Scrapping.\
-Telegram Bot Demo [@InstaTakerBot](https://t.me/InstaTakerBot) \
-**Note** : \
-_Don't forgot to set your own Coockie in Script._ [ **Deprecated** ]
+# InstaTaker (Instagram Tools)
 
-```php
-$_COOKIE = '';
+**InstaTaker** is a high-performance PHP API library & modern Progressive Web Application (PWA) for scraping and downloading Instagram content including Posts, Reels, Stories, Highlights, and Profile HD Photos.
+
+---
+
+## Key Features
+
+- **Media Downloader**: Download single images, HD MP4 videos, and multi-item carousel posts.
+- **Story & Highlight Saver**: Fetch active user stories and highlights.
+- **Profile HD Viewer**: Retrieve account metadata, bio, followers count, and high-resolution profile pictures.
+- **Secure Media Proxy**: Stream and download CDN media files directly without browser CORS restrictions or referrer leaks.
+- **Proxy Server Support**: Environment-based proxy setup (`PROXY_HOST`, `PROXY_PORT`) for high-volume or bypass fetching.
+- **Modern Glassmorphic Dark UI**: Mobile-friendly PWA interface with instant clipboard integration, loading states, and carousel previews.
+
+---
+
+## Environment Configuration (`.env`)
+
+Create a `.env` file in the root directory (refer to `.env.example`):
+
+```env
+username=your_instagram_username
+password=your_instagram_password
+PROXY_HOST=127.0.0.1
+PROXY_PORT=8080
 ```
-### Great News
-Since version 3.0 release you don't need to manually set cookies data, just login or run test.php file
-```php
-<?php
-require 'vendor/autoload.php';
 
-use GuzzleHttp\Client;
-use InstagramPHP\Login as InstagramPHPLogin;
+*Note: Environment variables are automatically loaded by `Dotenv` across all entry points.*
 
-$session = new InstagramPHPLogin(new Client(), 'user', 'pass');
-$session->SessionLogin();
+---
+
+## Installation & Setup
+
+1. **Install Dependencies**:
+   ```bash
+   composer install
+   ```
+
+2. **Authenticate & Generate Session Cookies**:
+   Run the authentication gateway via CLI or open `http://localhost:8000/auth.php` in your browser:
+   ```bash
+   php auth.php
+   ```
+
+3. **Start Local Development Server**:
+   ```bash
+   php -S localhost:8000
+   ```
+   Open `http://localhost:8000/` in your web browser.
+
+---
+
+## API Endpoints
+
+### 1. Fetch Media / Post / Story / Highlight
+- **Endpoint**: `GET /instagram.php?link={INSTAGRAM_URL}`
+- **Example**: `GET /instagram.php?link=https://www.instagram.com/p/C_samplecode/`
+- **Response**:
+  ```json
+  {
+    "status": true,
+    "type": "video",
+    "caption": "Sample post caption",
+    "like": 1250,
+    "comment": 45,
+    "view": 5400,
+    "file": "https://..."
+  }
+  ```
+
+### 2. Fetch User Profile
+- **Endpoint**: `GET /instagram.php?user={USERNAME}`
+- **Example**: `GET /instagram.php?user=instagram`
+- **Response**:
+  ```json
+  {
+    "status": true,
+    "type": "profile",
+    "name": "Instagram",
+    "username": "instagram",
+    "bio": "Discover what's next on Instagram.",
+    "profile_hd": "https://...",
+    "followers": 670000000,
+    "following": 50
+  }
+  ```
+
+### 3. Media Download Proxy
+- **Endpoint**: `POST /proxy.php`
+- **Body**: `file={MEDIA_URL}`
+- **Response**: `{"status": true, "path": "temp/e7d8...jpg"}`
+
+---
+
+## Project Structure
+
 ```
-In version 4.0 you can set variables in `.env` file instead of php source code. \
-Here is your environment variable table:
-
-| Variable   | Example Value | Description           |
-| ---------- | ------------- | --------------------- |
-| PROXY_HOST | 127.0.0.1     | Proxy server hostname |
-| PROXY_PORT | 8080          | Proxy server port     |
-| username   | your_username | Instagram username    |
-| password   | your_password | Instagram password    |
-## Local Deploy
-First install [composer](https://getcomposer.org/) on your system,then run:
-```bash
-composer install
+Instagram-Tools/
+├── css/
+│   └── styles.css          # Modern Glassmorphic styling system
+├── Instagram/
+│   ├── InstagramAPI.php     # Main Guzzle HTTP API client
+│   ├── Login.php            # Instagram auth & session handler
+│   └── Uri.php              # API endpoints and User-Agent constants
+├── js/
+│   ├── main.js              # Service Worker registration script
+│   └── script.js            # Frontend application logic & UI binding
+├── index.php                # Main PWA web interface
+├── instagram.php            # Primary JSON API route controller
+├── proxy.php                # Secure media proxy & temp cache manager
+├── auth.php                 # CLI & Web Browser authentication gateway
+├── sw.js                    # Service Worker cache controller
+├── manifest.json            # PWA manifest metadata
+├── composer.json            # Composer package manifest
+└── ReadMe.md                # Project documentation
 ```
-```bash
-cd Instagram-Tools && php -S localhost:8000
-```
-then open http://localhost:8000/ in browser,now you can use PWA in your local webserver.
-## Main Features :
-* Return Account Info (Profile)
-* Download Media
-* Download Highlights
-* Download Reels
-* Download Story
-# Changes
 
-<details>
-<summary>Click to see changelogs.</summary>
+---
 
-### v2.2
-* Now is be PWA
-### v2.5
-* Sadly instagram fully closed previous ( **__a=1** ) method, so i used a newer one.
-### v3.0
-* Completely object oriented
-* Codes rewrited from scratch
-* All requests are now handled over Guzzle
-* Fixed Highlight detection
-### v3.2
-* Now PWA can play carousel photos and videos
-* some javascript bugs fixed
-### v3.5
-Note: *this is final build for 2023*
-* Changed UserAgent somewhere
-* Fixed login CSRF data
-* Updated login ajax url
-* New regex pattern for getting **media id**
-* Bumped guzzle version to 7.8.1
-### v3.6
-* Fixed story scapping
-* Some changes in Highlights regex pattern
-### v3.7
-* Returning post play count
-* Bumped guzzle version to 7.9.2
-### v3.8
-* Fix of regex in getReelsID func
-* Updated UserAgents
-### v3.9
-* Update Instagram android useragent
-### v4.0
-* Add proxy support and environment configuration for Instagram API
-* Some code improvments.
-</details>
+## License & Credits
 
-## Credits
-Developer : Incognito Coder & Arash Ariaye \
-if you enjoy my content, consider to buy me a coffee here:
-1. Donate [ZarinPal](https://zarinp.al/@incognito)
-2. USDT(**TRC20**) : `TD5XNhZPuVoc6ZnadbrQenuur3WWKwkFqV`
-3. TRON(**TRX**) : `TD5XNhZPuVoc6ZnadbrQenuur3WWKwkFqV`
-4. TON(**TON**) : `UQBAL2lkifBy7H8-3M7khJXu8w2TqjvJ8tSbhFRkNAR_7mQJ`
+Developed by **Incognito Coder** & **Alireza Ahmand**.  
+Licensed under the **MIT License**.
