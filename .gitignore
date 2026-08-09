@@ -1,4 +1,5 @@
 cookies.txt
 vendor/
+temp/
 composer.lock
 .env
